@@ -1,0 +1,5 @@
+.DS_Store
+bootstrap
+bootstrap-arm64
+bootstrap-amd64
+!*.zip
