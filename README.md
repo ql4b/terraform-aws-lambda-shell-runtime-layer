@@ -19,7 +19,7 @@ A custom AWS Lambda runtime is a [program that runs a Lambda function's handler 
 
 This module ships pre-built runtime binaries (Go bootstrap) and publishes them as a Lambda Layer. The runtime:
 
-1. Starts as `/opt/bootstrap` in the Lambda execution environment
+1. Starts as `/var/runtime/bootstrap` in the Lambda execution environment
 2. Polls the [Lambda Runtime API](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html) for invocation events
 3. Sources your handler script (e.g. `handler.sh`)
 4. Calls the specified function (e.g. `run`) with the event payload
