@@ -11,7 +11,7 @@ run () {
 That's a complete Lambda function. No SDK, no framework, no build step.
 
 
-![diagram](./doc/diagram.jpg)
+![diagram](https://raw.githubusercontent.com/ql4b/terraform-aws-lambda-shell-runtime-layer/main/doc/diagram.jpg)
 
 ## How it works
 
