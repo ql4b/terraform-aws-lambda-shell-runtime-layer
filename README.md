@@ -32,7 +32,8 @@ Publishing the runtime as a layer keeps your function deployment packages tiny (
 ```hcl
 # Publish the runtime layer (once per region)
 module "shell_runtime" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-shell-runtime-layer.git?ref=v1.0.0"
+  source  = "ql4b/lambda-shell-runtime-layer/aws"
+  version = "~> 1.0"
 
   name         = "shell-runtime"
   architecture = "arm64"
@@ -40,7 +41,8 @@ module "shell_runtime" {
 
 # Use it in your functions
 module "my_function" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.0"
 
   source_dir = "./app"
   name       = "my-function"
@@ -63,14 +65,16 @@ The layer is published once and shared across functions:
 
 ```hcl
 module "shell_runtime" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-shell-runtime-layer.git?ref=v1.0.0"
+  source  = "ql4b/lambda-shell-runtime-layer/aws"
+  version = "~> 1.0"
 
   name         = "shell-runtime"
   architecture = "arm64"
 }
 
 module "function_a" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.0"
 
   source_dir   = "./app"
   name         = "function-a"
@@ -81,7 +85,8 @@ module "function_a" {
 }
 
 module "function_b" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.0"
 
   source_dir   = "./app"
   name         = "function-b"
@@ -142,24 +147,27 @@ The runtime layer provides the shell bootstrap. To add CLI tools (jq, htmlq, uui
 
 ```hcl
 module "shell_runtime" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-shell-runtime-layer.git?ref=v1.0.0"
+  source  = "ql4b/lambda-shell-runtime-layer/aws"
+  version = "~> 1.0"
 
   name         = "shell-runtime"
   architecture = "arm64"
 }
 
 module "jq" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
+  source  = "ql4b/lambda-layer/aws"
+  version = "~> 1.0"
 
   name       = "jq"
-  source_url = "https://github.com/ql4b/lambda-shell-layers/releases/download/v0.0.3/jq-arm64-layer.zip"
+  source_url = "https://github.com/ql4b/lambda-shell-layers/releases/download/v0.0.4/jq-arm64-layer.zip"
 
   compatible_architectures = ["arm64"]
   enable_ssm_parameters    = false
 }
 
 module "my_function" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.0"
 
   source_dir   = "./app"
   name         = "my-function"
@@ -224,7 +232,7 @@ Invoke:
 curl -s -XPOST http://localhost:9000/2015-03-31/functions/function/invocations -d '{}'
 ```
 
-> Note: The complete Dockerfile includes jq, uuid, and htmlq layers. Handlers that require other layers (http-cli, qrencode) won't work locally unless you add them to the Dockerfile.
+> Note: The complete Dockerfile includes jq, uuid, htmlq, and qrencode layers. Handlers that require other layers (http-cli) won't work locally unless you add them to the Dockerfile.
 
 ## Architecture
 
