@@ -17,7 +17,8 @@ handler.sh
 ├── events()    → runtime + jq
 ├── id()        → runtime + jq + uuid
 ├── runtimes()  → runtime + jq + htmlq
-└── status()    → runtime + jq + http-cli
+├── status()    → runtime + jq + http-cli
+└── qr()        → runtime + qrencode
 ```
 
 All layers are fetched from GitHub Releases:
@@ -41,6 +42,7 @@ aws lambda invoke --function-name shell-lambda-with-layers-events /dev/stdout
 aws lambda invoke --function-name shell-lambda-with-layers-id /dev/stdout
 aws lambda invoke --function-name shell-lambda-with-layers-runtimes /dev/stdout
 aws lambda invoke --function-name shell-lambda-with-layers-status /dev/stdout
+aws lambda invoke --function-name shell-lambda-with-layers-qr /dev/stdout
 ```
 
 ## Functions
@@ -52,6 +54,7 @@ aws lambda invoke --function-name shell-lambda-with-layers-status /dev/stdout
 | id | `handler.id` | runtime, jq, uuid | Generate UUID, return as JSON |
 | runtimes | `handler.runtimes` | runtime, jq, htmlq | Scrape AWS docs for Lambda runtimes |
 | status | `handler.status` | runtime, jq, http-cli | HTTP status check with http-cli |
+| qr | `handler.qr` | runtime, qrencode | Generate QR code as ANSI art |
 
 ## Configuration
 

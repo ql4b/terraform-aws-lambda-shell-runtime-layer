@@ -13,6 +13,7 @@ RUN unzip /tmp/runtime/bootstrap-${ARCH}.zip -d /var/runtime && chmod +x /var/ru
 RUN curl -sSL -o /tmp/jq.zip "https://github.com/ql4b/lambda-shell-layers/releases/download/${LAYERS_VERSION}/jq-${ARCH}-layer.zip" \
     && curl -sSL -o /tmp/uuid.zip "https://github.com/ql4b/lambda-shell-layers/releases/download/${LAYERS_VERSION}/uuid-${ARCH}-layer.zip" \
     && curl -sSL -o /tmp/htmlq.zip "https://github.com/ql4b/lambda-shell-layers/releases/download/${LAYERS_VERSION}/htmlq-${ARCH}-layer.zip" \
+    && curl -sSL -o /tmp/qrencode.zip "https://github.com/ql4b/lambda-shell-layers/releases/download/${LAYERS_VERSION}/qrencode-${ARCH}-layer.zip" \
     && for zip in /tmp/*.zip; do unzip -o "$zip" -d /opt; done
 
 

@@ -17,6 +17,15 @@ module "runtime" {
   architecture = local.arch
 }
 
+module "qrencode" {
+  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
+
+  name                     = "${local.name}-qrencode"
+  source_url               = "${local.layers_base}/qrencode-${local.arch}-layer.zip"
+  compatible_architectures = [local.arch]
+  enable_ssm_parameters    = false
+}
+
 module "jq" {
   source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
 
@@ -135,6 +144,21 @@ module "status" {
   ]
 }
 
+module "qr" {
+  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+
+  source_dir   = "./app"
+  name         = "${local.name}-qr"
+  runtime      = "provided.al2023"
+  handler      = "handler.qr"
+  architecture = local.arch
+
+  layers = [
+    module.runtime.layer_arn,
+    module.qrencode.layer_arn,
+  ]
+}
+
 # --- Outputs ---
 
 output "functions" {
@@ -144,6 +168,7 @@ output "functions" {
     id       = module.id
     runtimes = module.runtimes
     status   = module.status
+    qr       = module.qr
   }
 }
 

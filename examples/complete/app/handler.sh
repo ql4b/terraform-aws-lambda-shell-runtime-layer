@@ -39,3 +39,7 @@ status () {
     http-cli --status-codes -o /dev/null https://wttr.in/?format=1 \
     | jq '{ code: .http_cli_status_codes.server }'
 }
+
+qr () {
+    qrencode "https://cloudless.sh" -t ANSI256 -o -
+}
