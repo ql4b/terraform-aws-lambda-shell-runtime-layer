@@ -186,6 +186,46 @@ See [`examples/aws-services/`](./examples/aws-services/) — interact with S3, D
 
 See [`examples/endpoints/`](./examples/endpoints/) — expose shell functions as HTTP endpoints via Lambda Function URLs (public or IAM-authenticated), custom domains with CloudFront, or API Gateway with usage plans.
 
+## Local Testing with Docker
+
+Test your shell functions locally without deploying to AWS. Two Dockerfiles are provided:
+
+- `basic.Dockerfile` — runtime only (curl available from al2023)
+- `Dockerfile` — runtime + tool layers (jq, uuid, htmlq)
+
+### Basic (runtime only)
+
+```bash
+docker build -f basic.Dockerfile --platform linux/arm64 -t shell-runtime-basic .
+docker run --rm --platform linux/arm64 -p 9000:8080 shell-runtime-basic
+```
+
+```bash
+curl -s -XPOST http://localhost:9000/2015-03-31/functions/function/invocations -d '{}'
+```
+
+### Complete (with layers)
+
+```bash
+docker build -f Dockerfile --platform linux/arm64 -t shell-runtime-complete .
+docker run --rm --platform linux/arm64 -p 9000:8080 shell-runtime-complete
+```
+
+Default handler is `handler.weather`. Override to test other functions:
+
+```bash
+docker run --rm --platform linux/arm64 -p 9000:8080 shell-runtime-complete handler.id
+docker run --rm --platform linux/arm64 -p 9000:8080 shell-runtime-complete handler.runtimes
+```
+
+Invoke:
+
+```bash
+curl -s -XPOST http://localhost:9000/2015-03-31/functions/function/invocations -d '{}'
+```
+
+> Note: The complete Dockerfile includes jq, uuid, and htmlq layers. Handlers that require other layers (http-cli, qrencode) won't work locally unless you add them to the Dockerfile.
+
 ## Architecture
 
 The module ships pre-built runtime binaries for both architectures:
