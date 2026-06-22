@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"os/exec"
@@ -49,7 +50,10 @@ func (c *runtimeAPIClient) getNextInvocation() (string, string, []byte, error) {
 	}
 
 	body := make([]byte, contentLength)
-	reader.Read(body)
+	_, err = io.ReadFull(reader, body)
+	if err != nil {
+		return "", "", nil, err
+	}
 	return requestID, traceID, body, nil
 }
 
