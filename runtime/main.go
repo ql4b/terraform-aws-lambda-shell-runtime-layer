@@ -26,31 +26,58 @@ func (c *runtimeAPIClient) getNextInvocation() (string, string, []byte, error) {
 	}
 	defer conn.Close()
 
-	fmt.Fprintf(conn, "GET /2018-06-01/runtime/invocation/next HTTP/1.1\r\nHost: %s\r\n\r\n", c.host)
+	fmt.Fprintf(conn, "GET /2018-06-01/runtime/invocation/next HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n", c.host)
 
 	reader := bufio.NewReader(conn)
 	var requestID string
 	var traceID string
 	var contentLength int
+	var chunked bool
 
 	for {
 		line, _ := reader.ReadString('\n')
-		if strings.HasPrefix(line, "Lambda-Runtime-Aws-Request-Id:") {
+		lower := strings.ToLower(line)
+		if strings.HasPrefix(lower, "lambda-runtime-aws-request-id:") {
 			requestID = strings.TrimSpace(line[31:])
 		}
-		if strings.HasPrefix(line, "Lambda-Runtime-Trace-Id:") {
+		if strings.HasPrefix(lower, "lambda-runtime-trace-id:") {
 			traceID = strings.TrimSpace(line[24:])
 		}
-		if strings.HasPrefix(line, "Content-Length:") {
+		if strings.HasPrefix(lower, "content-length:") {
 			contentLength, _ = strconv.Atoi(strings.TrimSpace(line[16:]))
+		}
+		if strings.HasPrefix(lower, "transfer-encoding:") && strings.Contains(lower, "chunked") {
+			chunked = true
 		}
 		if line == "\r\n" {
 			break
 		}
 	}
 
-	body := make([]byte, contentLength)
-	_, err = io.ReadFull(reader, body)
+	var body []byte
+	if contentLength > 0 {
+		body = make([]byte, contentLength)
+		_, err = io.ReadFull(reader, body)
+	} else if chunked {
+		// Read chunked body
+		var chunks []byte
+		for {
+			sizeLine, _ := reader.ReadString('\n')
+			sizeLine = strings.TrimSpace(sizeLine)
+			size, _ := strconv.ParseInt(sizeLine, 16, 64)
+			if size == 0 {
+				break
+			}
+			chunk := make([]byte, size)
+			io.ReadFull(reader, chunk)
+			chunks = append(chunks, chunk...)
+			reader.ReadString('\n') // consume trailing CRLF
+		}
+		body = chunks
+	} else {
+		// Connection: close — read until EOF
+		body, err = io.ReadAll(reader)
+	}
 	if err != nil {
 		return "", "", nil, err
 	}
@@ -64,7 +91,11 @@ func (c *runtimeAPIClient) sendResponse(requestID string, response []byte) error
 	}
 	defer conn.Close()
 
-	fmt.Fprintf(conn, "POST /2018-06-01/runtime/invocation/%s/response HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\n\r\n%s", requestID, c.host, len(response), response)
+	fmt.Fprintf(conn, "POST /2018-06-01/runtime/invocation/%s/response HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nConnection: close\r\n\r\n%s", requestID, c.host, len(response), response)
+
+	// Read status line to ensure Runtime API acknowledged
+	reader := bufio.NewReader(conn)
+	reader.ReadString('\n')
 	return nil
 }
 
@@ -76,7 +107,10 @@ func (c *runtimeAPIClient) sendError(requestID, errorMsg string) error {
 	defer conn.Close()
 
 	errorPayload := `{"errorMessage": "` + errorMsg + `", "errorType": "Runtime.HandlerError"}`
-	fmt.Fprintf(conn, "POST /2018-06-01/runtime/invocation/%s/error HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nLambda-Runtime-Function-Error-Type: Runtime.HandlerError\r\n\r\n%s", requestID, c.host, len(errorPayload), errorPayload)
+	fmt.Fprintf(conn, "POST /2018-06-01/runtime/invocation/%s/error HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nConnection: close\r\nLambda-Runtime-Function-Error-Type: Runtime.HandlerError\r\n\r\n%s", requestID, c.host, len(errorPayload), errorPayload)
+
+	reader := bufio.NewReader(conn)
+	reader.ReadString('\n')
 	return nil
 }
 
