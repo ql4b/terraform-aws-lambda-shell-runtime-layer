@@ -6,7 +6,8 @@ locals {
 }
 
 module "runtime" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.1.0"
+  source  = "ql4b/lambda-layer/aws"
+  version = "~> 1.2"
 
   context = module.this.context
 

@@ -18,7 +18,8 @@ module "runtime" {
 }
 
 module "qrencode" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
+  source  = "ql4b/lambda-layer/aws"
+  version = "~> 1.2"
 
   name                     = "${local.name}-qrencode"
   source_url               = "${local.layers_base}/qrencode-${local.arch}-layer.zip"
@@ -27,7 +28,8 @@ module "qrencode" {
 }
 
 module "jq" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
+  source  = "ql4b/lambda-layer/aws"
+  version = "~> 1.2"
 
   name                     = "${local.name}-jq"
   source_url               = "${local.layers_base}/jq-${local.arch}-layer.zip"
@@ -36,7 +38,8 @@ module "jq" {
 }
 
 module "uuid" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
+  source  = "ql4b/lambda-layer/aws"
+  version = "~> 1.2"
 
   name                     = "${local.name}-uuid"
   source_url               = "${local.layers_base}/uuid-${local.arch}-layer.zip"
@@ -45,7 +48,8 @@ module "uuid" {
 }
 
 module "htmlq" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
+  source  = "ql4b/lambda-layer/aws"
+  version = "~> 1.2"
 
   name                     = "${local.name}-htmlq"
   source_url               = "${local.layers_base}/htmlq-${local.arch}-layer.zip"
@@ -54,7 +58,8 @@ module "htmlq" {
 }
 
 module "http_cli" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
+  source  = "ql4b/lambda-layer/aws"
+  version = "~> 1.2"
 
   name                     = "${local.name}-http-cli"
   source_url               = "${local.layers_base}/http-cli-${local.arch}-layer.zip"
@@ -66,7 +71,8 @@ module "http_cli" {
 
 # curl only (no extra layers)
 module "weather" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-weather"
@@ -79,7 +85,8 @@ module "weather" {
 
 # jq layer
 module "events" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-events"
@@ -95,7 +102,8 @@ module "events" {
 
 # uuid + jq layers
 module "id" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-id"
@@ -112,7 +120,8 @@ module "id" {
 
 # htmlq + jq layers
 module "runtimes" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-runtimes"
@@ -129,7 +138,8 @@ module "runtimes" {
 
 # http-cli + jq layers
 module "status" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-status"
@@ -145,7 +155,8 @@ module "status" {
 }
 
 module "qr" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-qr"

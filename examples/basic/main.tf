@@ -17,7 +17,8 @@ module "runtime" {
 }
 
 module "app" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir = "./app"
 

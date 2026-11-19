@@ -18,7 +18,8 @@ module "runtime" {
 }
 
 module "jq" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
+  source  = "ql4b/lambda-layer/aws"
+  version = "~> 1.2"
 
   name                     = "${local.name}-jq"
   source_url               = "${local.layers_base}/jq-${local.arch}-layer.zip"
@@ -31,7 +32,8 @@ module "jq" {
 # =============================================================================
 
 module "public" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-public"
@@ -68,7 +70,8 @@ variable "allowed_principals" {
 }
 
 module "private" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-private"

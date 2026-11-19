@@ -327,7 +327,7 @@ No providers.
 
 | Name | Source | Version |
 | ---- | ------ | ------- |
-| <a name="module_runtime"></a> [runtime](#module\_runtime) | git::https://github.com/ql4b/terraform-aws-lambda-layer.git | v1.1.0 |
+| <a name="module_runtime"></a> [runtime](#module\_runtime) | ql4b/lambda-layer/aws | ~> 1.2 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.25.0 |
 
 ## Resources
