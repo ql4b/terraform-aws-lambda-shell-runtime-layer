@@ -18,7 +18,8 @@ module "runtime" {
 }
 
 module "jq" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
+  source  = "ql4b/lambda-layer/aws"
+  version = "~> 1.2"
 
   name                     = "${local.name}-jq"
   source_url               = "${local.layers_base}/jq-${local.arch}-layer.zip"
@@ -27,7 +28,8 @@ module "jq" {
 }
 
 module "uuid" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-layer.git?ref=v1.2.0"
+  source  = "ql4b/lambda-layer/aws"
+  version = "~> 1.2"
 
   name                     = "${local.name}-uuid"
   source_url               = "${local.layers_base}/uuid-${local.arch}-layer.zip"
@@ -66,7 +68,8 @@ resource "aws_ssm_parameter" "this" {
 
 # List S3 buckets (curl only)
 module "buckets" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-buckets"
@@ -93,7 +96,8 @@ resource "aws_iam_role_policy" "buckets_s3" {
 
 # Put item to DynamoDB (uuid + jq)
 module "put_item" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-put-item"
@@ -128,7 +132,8 @@ resource "aws_iam_role_policy" "put_item_dynamodb" {
 
 # Publish to SNS (curl only)
 module "publish" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-publish"
@@ -159,7 +164,8 @@ resource "aws_iam_role_policy" "publish_sns" {
 
 # Get SSM parameter (jq)
 module "get_param" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-get-param"
@@ -193,7 +199,8 @@ resource "aws_iam_role_policy" "get_param_ssm" {
 
 # Send SQS message (jq)
 module "send_message" {
-  source = "git::https://github.com/ql4b/terraform-aws-lambda-function.git?ref=v1.1.0"
+  source  = "ql4b/lambda-function/aws"
+  version = "~> 1.2"
 
   source_dir   = "./app"
   name         = "${local.name}-send-message"
